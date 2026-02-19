@@ -6,9 +6,20 @@ const locationSchema = new mongoose.Schema({
     required: [true, 'Location name is required'],
   },
 
+  code: {
+    type: String,
+    required: [true, 'Location code is required'],
+    unique: true,
+  },
+
   locationType: {
     type: String,
-    enum: ['permanent_branch', 'temporary_branch', 'online_platform'],
+    enum: [
+      'warehouse',
+      'permanent_branch',
+      'temporary_branch',
+      'online_platform',
+    ],
     required: [true, 'Location type is required'],
   },
 
@@ -26,6 +37,14 @@ const locationSchema = new mongoose.Schema({
     required: [true, 'City is required'],
   },
 
+  address: {
+    type: String,
+  },
+
+  platformUrl: {
+    type: String,
+  },
+
   isActive: {
     type: Boolean,
     default: true,
@@ -36,6 +55,24 @@ const locationSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+
+  timestamps: true,
+});
+
+locationSchema.pre('save', async function (next) {
+  if (!this.code) {
+    const prefix =
+      this.locationType === 'warehouse'
+        ? 'WH'
+        : this.locationType === 'permanent_branch'
+          ? 'PB'
+          : this.locationType === 'temporary_branch'
+            ? 'TB'
+            : 'OL';
+    const count = await mongoose.model('Location').countDocuments();
+    this.code = `${prefix}-${String(count + 1).padStart(3, '0')}`;
+  }
+  next();
 });
 
 const Location = mongoose.model('Location', locationSchema);
