@@ -18,6 +18,10 @@ const productSchema = new mongoose.Schema(
       required: [true, 'Selling price is required'],
     },
 
+    volume: {
+      type: String,
+    },
+
     category: {
       type: String,
       enum: ['perfumes', 'hair_mist', 'bakhour', 'package'],
@@ -39,6 +43,8 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+productSchema.index({ category: 1, model: 1 });
+
 productSchema.pre('validate', async function (next) {
   if (!this.model) {
     // Define category prefixes
@@ -52,8 +58,10 @@ productSchema.pre('validate', async function (next) {
     // Get prefix from category or use default
     const categoryPrefix = categoryPrefixMap[this.category] || 'GEN';
 
-    // Get count for sequential number
-    const count = await this.constructor.countDocuments();
+    // Count ONLY documents with the same category
+    const count = await this.constructor.countDocuments({
+      category: this.category,
+    });
 
     // Format: PRD-CATEGORY-0001
     this.model = `PRD-${categoryPrefix}-${String(count + 1).padStart(4, '0')}`;

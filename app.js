@@ -9,6 +9,7 @@ const cors = require('cors');
 const userRouter = require('./routes/userRoutes');
 const locationRouter = require('./routes/locationRoutes');
 const rawMaterialRoutes = require('./routes/rawMaterialRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 
@@ -101,6 +102,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/locations', locationRouter);
 app.use('/api/v1/raw-materials', rawMaterialRoutes);
+app.use('/api/v1/products', productRoutes);
 
 // 3. HEALTH CHECK ROUTE
 // app.get('/api/health', (req, res) => {
