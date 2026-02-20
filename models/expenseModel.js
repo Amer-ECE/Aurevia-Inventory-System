@@ -65,20 +65,33 @@ const expenseSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Auto-generate expense number
-expenseSchema.pre('save', async function (next) {
+expenseSchema.pre('validate', async function (next) {
   if (!this.expenseNumber) {
     const date = new Date();
     const year = date.getFullYear().toString().slice(-2);
     const month = String(date.getMonth() + 1).padStart(2, '0');
-    const count = await mongoose.model('Expense').countDocuments();
-    this.expenseNumber = `EXP-${year}${month}-${String(count + 1).padStart(
-      4,
-      '0'
-    )}`;
+
+    // Better: Count only from current month
+    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const endOfMonth = new Date(
+      date.getFullYear(),
+      date.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999,
+    );
+
+    const count = await this.constructor.countDocuments({
+      createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+    });
+
+    this.expenseNumber = `EXP-${year}${month}-${String(count + 1).padStart(4, '0')}`;
   }
   next();
 });

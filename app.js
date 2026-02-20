@@ -17,6 +17,7 @@ const purchaseOrderRoutes = require('./routes/purchaseOrderRoutes');
 const productionOrderRoutes = require('./routes/productionOrderRoutes');
 const transferRoutes = require('./routes/transferRoutes');
 const saleRoutes = require('./routes/saleRoutes');
+const expenseRoutes = require('./routes/expenseRoutes');
 const movementRoutes = require('./routes/movementRoutes');
 
 const app = express();
@@ -118,6 +119,7 @@ app.use('/api/v1/purchase-orders', purchaseOrderRoutes);
 app.use('/api/v1/production-orders', productionOrderRoutes);
 app.use('/api/v1/transfers', transferRoutes);
 app.use('/api/v1/sales', saleRoutes);
+app.use('/api/v1/expenses', expenseRoutes);
 app.use('/api/v1/movements', movementRoutes);
 
 // 3. HEALTH CHECK ROUTE
