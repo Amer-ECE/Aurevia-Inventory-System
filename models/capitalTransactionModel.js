@@ -48,19 +48,21 @@ const capitalTransactionSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Auto-generate transaction number
-capitalTransactionSchema.pre('save', async function (next) {
+capitalTransactionSchema.pre('validate', async function (next) {
   if (!this.transactionNumber) {
     const date = new Date();
     const year = date.getFullYear().toString().slice(-2);
     const month = String(date.getMonth() + 1).padStart(2, '0');
-    const count = await mongoose.model('CapitalTransaction').countDocuments();
+
+    // Use this.constructor instead of mongoose.model
+    const count = await this.constructor.countDocuments();
     this.transactionNumber = `CAP-${year}${month}-${String(count + 1).padStart(
       5,
-      '0'
+      '0',
     )}`;
   }
   next();
@@ -72,6 +74,6 @@ capitalTransactionSchema.index({ createdAt: -1 });
 
 const CapitalTransaction = mongoose.model(
   'CapitalTransaction',
-  capitalTransactionSchema
+  capitalTransactionSchema,
 );
 module.exports = CapitalTransaction;

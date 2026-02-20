@@ -12,6 +12,7 @@ const rawMaterialRoutes = require('./routes/rawMaterialRoutes');
 const productRoutes = require('./routes/productRoutes');
 const billOfMaterialRoutes = require('./routes/billOfMaterialRoutes');
 const stockRoutes = require('./routes/stockRoutes');
+const capitalRoutes = require('./routes/capitalRoutes');
 
 const app = express();
 
@@ -40,7 +41,7 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL || 'http://localhost:3000',
     credentials: true,
-  })
+  }),
 );
 
 // Body parser - Read data from body into req.body
@@ -59,7 +60,7 @@ app.use((req, res, next) => {
       if (typeof req.body[key] === 'string') {
         req.body[key] = req.body[key].replace(
           /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-          ''
+          '',
         );
       }
     });
@@ -71,7 +72,7 @@ app.use((req, res, next) => {
       if (typeof req.query[key] === 'string') {
         req.query[key] = req.query[key].replace(
           /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-          ''
+          '',
         );
       }
     });
@@ -107,6 +108,7 @@ app.use('/api/v1/raw-materials', rawMaterialRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/boms', billOfMaterialRoutes);
 app.use('/api/v1/stocks', stockRoutes);
+app.use('/api/v1/capital', capitalRoutes);
 
 // 3. HEALTH CHECK ROUTE
 // app.get('/api/health', (req, res) => {
