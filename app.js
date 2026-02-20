@@ -10,6 +10,7 @@ const userRouter = require('./routes/userRoutes');
 const locationRouter = require('./routes/locationRoutes');
 const rawMaterialRoutes = require('./routes/rawMaterialRoutes');
 const productRoutes = require('./routes/productRoutes');
+const billOfMaterialRoutes = require('./routes/billOfMaterialRoutes');
 
 const app = express();
 
@@ -103,6 +104,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/locations', locationRouter);
 app.use('/api/v1/raw-materials', rawMaterialRoutes);
 app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/boms', billOfMaterialRoutes);
 
 // 3. HEALTH CHECK ROUTE
 // app.get('/api/health', (req, res) => {
