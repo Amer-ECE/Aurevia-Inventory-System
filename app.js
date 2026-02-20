@@ -15,6 +15,8 @@ const stockRoutes = require('./routes/stockRoutes');
 const capitalRoutes = require('./routes/capitalRoutes');
 const purchaseOrderRoutes = require('./routes/purchaseOrderRoutes');
 const productionOrderRoutes = require('./routes/productionOrderRoutes');
+const transferRoutes = require('./routes/transferRoutes');
+const movementRoutes = require('./routes/movementRoutes');
 
 const app = express();
 
@@ -113,6 +115,8 @@ app.use('/api/v1/stocks', stockRoutes);
 app.use('/api/v1/capital', capitalRoutes);
 app.use('/api/v1/purchase-orders', purchaseOrderRoutes);
 app.use('/api/v1/production-orders', productionOrderRoutes);
+app.use('/api/v1/transfers', transferRoutes);
+app.use('/api/v1/movements', movementRoutes);
 
 // 3. HEALTH CHECK ROUTE
 // app.get('/api/health', (req, res) => {
