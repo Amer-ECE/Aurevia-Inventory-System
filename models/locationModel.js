@@ -62,17 +62,22 @@ const locationSchema = new mongoose.Schema(
 
 locationSchema.pre('validate', async function (next) {
   if (!this.code) {
-    const prefix =
-      this.locationType === 'warehouse'
-        ? 'WH'
-        : this.locationType === 'permanent_branch'
-        ? 'PB'
-        : this.locationType === 'temporary_branch'
-        ? 'TB'
-        : 'OL';
+    // Define prefix based on location type
+    const prefixMap = {
+      warehouse: 'WH',
+      permanent_branch: 'PB',
+      temporary_branch: 'TB',
+      online_platform: 'OL',
+    };
 
-    // Use this.constructor instead of mongoose.model
-    const count = await this.constructor.countDocuments();
+    const prefix = prefixMap[this.locationType];
+
+    // Count ONLY documents with the same location type
+    const count = await this.constructor.countDocuments({
+      locationType: this.locationType,
+    });
+
+    // Generate code with sequential number for this specific type
     this.code = `${prefix}-${String(count + 1).padStart(3, '0')}`;
   }
   next();
