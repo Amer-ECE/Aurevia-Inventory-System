@@ -63,31 +63,38 @@ const saleSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Auto-generate invoice number
-saleSchema.pre('save', async function (next) {
+saleSchema.pre('validate', async function (next) {
+  // Auto-generate invoice number
   if (!this.invoiceNumber) {
     const date = new Date();
     const year = date.getFullYear().toString().slice(-2);
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    const count = await mongoose.model('Sale').countDocuments({
-      saleDate: {
-        $gte: new Date().setHours(0, 0, 0),
-        $lte: new Date().setHours(23, 59, 59),
-      },
+
+    const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+
+    const count = await this.constructor.countDocuments({
+      saleDate: { $gte: startOfDay, $lte: endOfDay },
     });
-    this.invoiceNumber = `INV-${year}${month}${day}-${String(
-      count + 1
-    ).padStart(3, '0')}`;
+
+    this.invoiceNumber = `INV-${year}${month}${day}-${String(count + 1).padStart(3, '0')}`;
   }
 
-  // Calculate item subtotals
+  // Calculate item subtotals and total
+  let subtotal = 0;
   for (const item of this.items) {
     item.subtotal = item.quantity * item.price;
+    subtotal += item.subtotal;
   }
+
+  // Set subtotal and total
+  this.subtotal = subtotal;
+  this.total = subtotal; // Add tax/discount logic here if needed
 
   next();
 });
