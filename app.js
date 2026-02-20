@@ -14,6 +14,7 @@ const billOfMaterialRoutes = require('./routes/billOfMaterialRoutes');
 const stockRoutes = require('./routes/stockRoutes');
 const capitalRoutes = require('./routes/capitalRoutes');
 const purchaseOrderRoutes = require('./routes/purchaseOrderRoutes');
+const productionOrderRoutes = require('./routes/productionOrderRoutes');
 
 const app = express();
 
@@ -111,6 +112,7 @@ app.use('/api/v1/boms', billOfMaterialRoutes);
 app.use('/api/v1/stocks', stockRoutes);
 app.use('/api/v1/capital', capitalRoutes);
 app.use('/api/v1/purchase-orders', purchaseOrderRoutes);
+app.use('/api/v1/production-orders', productionOrderRoutes);
 
 // 3. HEALTH CHECK ROUTE
 // app.get('/api/health', (req, res) => {
