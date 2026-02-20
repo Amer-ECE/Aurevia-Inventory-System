@@ -51,6 +51,8 @@ const rawMaterialSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+rawMaterialSchema.index({ category: 1, code: 1 });
+
 rawMaterialSchema.pre('validate', async function (next) {
   if (!this.code) {
     // Define custom prefixes for each category
@@ -67,7 +69,11 @@ rawMaterialSchema.pre('validate', async function (next) {
 
     const prefix = prefixMap[this.category] || 'UK'; // UK as fallback for unknown categories
 
-    const count = await this.constructor.countDocuments();
+    // Count ONLY documents with the same category
+    const count = await this.constructor.countDocuments({
+      category: this.category,
+    });
+
     this.code = `${prefix}-${String(count + 1).padStart(4, '0')}`;
   }
   next();
