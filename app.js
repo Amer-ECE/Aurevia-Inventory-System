@@ -18,6 +18,8 @@ const productionOrderRoutes = require('./routes/productionOrderRoutes');
 const transferRoutes = require('./routes/transferRoutes');
 const saleRoutes = require('./routes/saleRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
+const reportsRouter = require('./routes/reportsRoutes');
+const auditLogRouter = require('./routes/auditLogRoutes');
 const movementRoutes = require('./routes/movementRoutes');
 
 const app = express();
@@ -121,6 +123,8 @@ app.use('/api/v1/transfers', transferRoutes);
 app.use('/api/v1/sales', saleRoutes);
 app.use('/api/v1/expenses', expenseRoutes);
 app.use('/api/v1/movements', movementRoutes);
+app.use('/api/v1/reports', reportsRouter);
+app.use('/api/v1/audit-logs', auditLogRouter);
 
 // 3. HEALTH CHECK ROUTE
 // app.get('/api/health', (req, res) => {
